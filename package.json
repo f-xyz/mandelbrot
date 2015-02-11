@@ -1,0 +1,33 @@
+{
+  "name": "mandelbrot",
+  "version": "0.1.0",
+  "description": "Mandelbrot fractal using GLSL fragment shader, JavaScript and THREE.js",
+  "main": "server.js",
+  "dependencies": {
+    "colors": "~0.6.2",
+    "express": "~3.4.8",
+    "optimist": "~0.6.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fantasticMrFox/mandelcube.git"
+  },
+  "keywords": [
+    "mandelbrot",
+    "fractal",
+    "glsl",
+    "three",
+    "three.js"
+  ],
+  "author": "andr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fantasticMrFox/mandelcube/issues"
+  },
+  "homepage": "https://github.com/fantasticMrFox/mandelcube"
+}
