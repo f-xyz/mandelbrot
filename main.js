@@ -12,6 +12,7 @@ require.config({
 
 define(function(require) {
 
+    /** @type {THREE|exports} */
     var gl = require('three');
 
     var size = new gl.Vector2(innerWidth, innerHeight);
