@@ -12,7 +12,6 @@ require.config({
 
 define(function(require) {
 
-    /** @type {THREE|exports} */
     var gl = require('three');
 
     var size = new gl.Vector2(innerWidth, innerHeight);
@@ -23,7 +22,7 @@ define(function(require) {
     var acceleration = new gl.Vector3(0, 0, 0);
     var accelerationLimit = Infinity;
     var accelerationDelta = 0.00001;
-    var friction = 0.998;
+    var friction = new gl.Vector3(0.95, 0.95, 0.99);
     var args = new gl.Vector3(100, 0, 0);
     var running = false;
 
@@ -61,6 +60,8 @@ define(function(require) {
     scene.add(box);
     renderer.render(scene, camera);
 
+    //start();
+
     ///////////////////////////////////
 
     function start() {
@@ -91,7 +92,7 @@ define(function(require) {
 
             velocity
                 .add(acceleration)
-                .multiplyScalar(friction);
+                .multiply(friction);
 
             zoom.x += velocity.z;
 
@@ -158,11 +159,11 @@ define(function(require) {
                 break;
             case 38: // up
             case 40: // down
-                velocity.y = 0;
+                acceleration.y = 0;
                 break;
             case 39: // right
             case 37: // left
-                velocity.x = 0;
+                acceleration.x = 0;
                 break;
         }
     }

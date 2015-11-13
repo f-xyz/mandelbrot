@@ -20,12 +20,11 @@ void main() {
     center /= exp(zoom.x) / E;
     center += vec2(pos.x*ratio, pos.y);
 
-     //float cosT = cos(PI*mouse.x);
-     //float sinT = sin(PI*mouse.x);
-     //c = c * mat2(cosT, -sinT,
-     //             sinT, cosT);
-
-    //c += zoom.xy;
+//     float cosT = cos(PI*mouse.x);
+//     float sinT = sin(PI*mouse.x);
+//     center = center * mat2(cosT, -sinT,
+//                       sinT, cosT);
+//     center += zoom.xy;
 
     vec2 point = center;
 
