@@ -1,41 +1,28 @@
-require.config({
-    urlArgs: Date.now(),
-    baseUrl: './',
-    paths: {
-        three: 'lib/three',
-        text: 'lib/text'
-    },
-    shim: {
-        three: { exports: 'THREE' }
-    }
-});
-
-define(function(require) {
+define(function(require/*, exports, module*/) {
+    'use strict';
 
     var gl = require('three');
+    var Stats = require('stats');
+
+    var stats = new Stats();
+    document.body.appendChild(stats.domElement);
+
+    const V = 0.01; // velocity delta
+    const Z = 0.0001; // zoom delta
 
     var size = new gl.Vector2(innerWidth, innerHeight);
-    var position = new gl.Vector2(0, 0);
-    var zoom = new gl.Vector2(1, 0);
+    var position = new gl.Vector3(0, 0, 0.1);
+    var vars = new gl.Vector3(100, 0, 0);
     var velocity = new gl.Vector3(0, 0, 0);
-    var velocityLimit = Infinity;
     var acceleration = new gl.Vector3(0, 0, 0);
-    var accelerationLimit = Infinity;
-    var accelerationDelta = 0.00001;
-    var friction = new gl.Vector3(0.95, 0.95, 0.99);
-    var args = new gl.Vector3(100, 0, 0);
-    var running = false;
+    var friction = new gl.Vector3(0.90, 0.90, 0.999);
+    var isRunning = false;
 
     var canvas = document.querySelector('canvas');
     var renderer = new gl.WebGLRenderer({ canvas: canvas });
     renderer.setSize(size.x, size.y);
 
-    var camera = new gl.PerspectiveCamera(
-        45,
-        size.x / size.y,
-        0.1,
-        100
-    );
+    var camera = new gl.PerspectiveCamera(45, size.x/size.y, 0.1, 100);
     camera.position.set(0, 0, 1);
     camera.lookAt(new gl.Vector3(0, 0, 0));
 
@@ -44,16 +31,14 @@ define(function(require) {
     ///////////////////////////////////
 
     var box = new gl.Mesh(
-        new gl.BoxGeometry(1, size.y / size.x, 1),
-        //new t.MeshNormalMaterial(),
+        new gl.BoxGeometry(1, size.y/size.x, 1),
         new gl.ShaderMaterial({
             vertexShader:   require('text!./shaders/mandelbrot.vertex.glsl'),
             fragmentShader: require('text!./shaders/mandelbrot.fragment.glsl'),
             uniforms: {
-                args: { type: 'v3', value: args },
-                zoom: { type: 'v2', value: zoom },
                 size: { type: 'v2', value: size },
-                pos:  { type: 'v2', value: position }
+                pos:  { type: 'v3', value: position },
+                vars: { type: 'v3', value: vars }
             }
         })
     );
@@ -66,41 +51,45 @@ define(function(require) {
 
     function start() {
         console.log('start');
-        running = true;
+        isRunning = true;
         loop();
     }
 
     function stop() {
         console.log('stop');
-        running = false;
+        isRunning = false;
     }
 
     function loop() {
-        if (running) {
+        stats.begin();
+        if (isRunning) {
             requestAnimationFrame(loop);
             step();
             render();
         }
+        stats.end();
     }
 
     function step() {
-        if (running) {
+        if (isRunning) {
 
-            position.x += velocity.x / zoom.x / Math.exp(zoom.x) * 4*Math.E;
-            position.y += velocity.y / zoom.x / Math.exp(zoom.x) * 4*Math.E;
-            position.z += velocity.z / zoom.x / Math.exp(zoom.x) * 4*Math.E;
+            position.x += velocity.x / Math.exp(position.z);
+            position.y += velocity.y / Math.exp(position.z);
+            position.z += velocity.z;
 
             velocity
                 .add(acceleration)
-                .multiply(friction);
+                .multiply(friction)
+            ;
 
-            zoom.x += velocity.z;
+            console.log(position.z);
 
-            if (zoom.x < 0.1) {
+            if (position.z < 0.1) {
+                position.z = 0.1;
                 velocity.set(0, 0, 0);
                 acceleration.set(0, 0, 0);
-                zoom.x = 0.1;
             }
+
         }
     }
 
@@ -117,29 +106,29 @@ define(function(require) {
     }
 
     function onMouseWheel(e) {
-        //zoom.x = zoom.x - e.wheelDelta/-1200;
-        //zoom.x = Math.max(0.25, zoom.x);
+        //zoom = zoom - e.wheelDelta/-1200;
+        //zoom = Math.max(0.25, zoom);
     }
 
     function onKeyDown(e) {
         switch (e.keyCode) {
             case 87: // w
-                acceleration.z += 0.00001;
+                velocity.y = V;
                 break;
             case 83: // s
-                acceleration.z -= 0.00001;
+                velocity.y = -V;
+                break;
+            case 65: // a
+                velocity.x = -V;
+                break;
+            case 68: // d
+                velocity.x = V;
                 break;
             case 38: // up
-                velocity.y = 0.01;
-                break;
-            case 39: // right
-                velocity.x = 0.01;
+                acceleration.z += Z;
                 break;
             case 40: // down
-                velocity.y = -0.01;
-                break;
-            case 37: // left
-                velocity.x = -0.01;
+                acceleration.z -= Z;
                 break;
         }
     }
@@ -147,25 +136,28 @@ define(function(require) {
     function onKeyUp(e) {
         switch (e.keyCode) {
             case 32: // space
-                if (!running) {
+                if (!isRunning) {
                     start();
                 } else {
+                    velocity.set(0, 0, 0);
+                    acceleration.set(0, 0, 0);
                     stop();
                 }
                 break;
             case 87: // w
             case 83: // s
-                acceleration.z = 0;
+                acceleration.y = 0;
+                break;
+            case 65: // a
+            case 68: // d
+                acceleration.x = 0;
                 break;
             case 38: // up
             case 40: // down
-                acceleration.y = 0;
-                break;
-            case 39: // right
-            case 37: // left
-                acceleration.x = 0;
+                acceleration.z = 0;
                 break;
         }
+        console.log(e.keyCode);
     }
 
     ////////////////////////
@@ -174,4 +166,5 @@ define(function(require) {
     addEventListener('mousewheel', onMouseWheel);
     addEventListener('keydown', onKeyDown);
     addEventListener('keyup', onKeyUp);
+
 });

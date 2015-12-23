@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-browser-sync start --server --directory --files=\"re./**/*\"
+browser-sync start --server --directory --files="**/*.*"

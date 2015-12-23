@@ -10,8 +10,22 @@
 </head>
 <body>
     <canvas></canvas>
-    <script src="lib/require.js"
-            data-main="main"></script>
+    <script src="lib/require.js"></script>
+    <script>
+        require.config({
+            baseUrl: './',
+            paths: {
+                three: 'lib/three',
+                stats: 'lib/stats',
+                text: 'lib/text'
+            },
+            shim: {
+                three: { exports: 'THREE' },
+                stats: { exports: 'Stats' }
+            }
+        });
+        require(['main']);
+    </script>
 </body>
 </html>
 
