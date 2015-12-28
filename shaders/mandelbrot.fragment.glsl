@@ -1,11 +1,8 @@
 #define PI 3.14159265
-#define E 2.71828182
-#define abssin(x) abs(sin(x))
 
-uniform float zoom;
 uniform vec2 size;
 uniform vec3 pos;
-uniform vec3 vars;
+uniform vec3 config;
 
 void main() {
 
@@ -14,30 +11,32 @@ void main() {
     vec2 center = vec2(3.5*p.x - 2.5, 2.0*p.y - 1.0);
 
     center /= exp(pos.z);
-    center += vec2(pos.x*ratio, pos.y);
-
-//     float cosT = cos(PI*mouse.x);
-//     float sinT = sin(PI*mouse.x);
-//     center = center * mat2(cosT, -sinT,
-//                       sinT, cosT);
-//     center += zoom.xy;
+    center += vec2(pos.x/*/ratio*/, pos.y);
 
     vec2 point = center;
     float distToCenter = length(p);
 
     gl_FragColor = vec4(0.0);
 
-    for (float i = 0.0; i > -1.0; i += 1.0) {
+    for (float i = 0.0; i >= 0.0; i += 1.0) {
         // iterations limit
-        if (i > vars.x) break;
+        if (i > config.x) break;
         // x = x^2 - y^2 + x0
         // y = 2xy + y0
         point = vec2(point.x*point.x - point.y*point.y, 2.0*point.x*point.y) + center;
         // x^2 + y^2 > 4
-        if (dot(point, point) > 4.0) {
-            float f = i / vars.x * distToCenter;
-            gl_FragColor = vec4(f, f, f*(2.2+log(i)), 1.0);
-//            gl_FragColor = vec4(0.5*pos.z, f, f, 1.0);
+        float z = dot(point, point);
+        if (z > 4.0) {
+//            float light = i / config.x * distToCenter;
+            float light = i + 1. - log(log(abs(z)) / log(2.));
+            light /= 100.0; // max iterations
+            float b = 1.;
+            gl_FragColor = vec4(
+                1.*b*light,
+                1.*b*light,
+                2.*b*light,
+                1.
+            );
             break;
         }
     }

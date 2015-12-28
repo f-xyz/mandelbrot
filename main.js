@@ -12,10 +12,10 @@ define(function(require/*, exports, module*/) {
 
     var size = new gl.Vector2(innerWidth, innerHeight);
     var position = new gl.Vector3(0, 0, 0.1);
-    var vars = new gl.Vector3(100, 0, 0);
     var velocity = new gl.Vector3(0, 0, 0);
     var acceleration = new gl.Vector3(0, 0, 0);
-    var friction = new gl.Vector3(0.90, 0.90, 0.999);
+    var friction = new gl.Vector3(0.90, 0.50, 0.999);
+    var config = new gl.Vector3(1000, 0, 0); // iterations / not used / not used
     var isRunning = false;
 
     var canvas = document.querySelector('canvas');
@@ -27,37 +27,36 @@ define(function(require/*, exports, module*/) {
     camera.lookAt(new gl.Vector3(0, 0, 0));
 
     var scene = new gl.Scene();
-
-    ///////////////////////////////////
-
     var box = new gl.Mesh(
         new gl.BoxGeometry(1, size.y/size.x, 1),
         new gl.ShaderMaterial({
             vertexShader:   require('text!./shaders/mandelbrot.vertex.glsl'),
             fragmentShader: require('text!./shaders/mandelbrot.fragment.glsl'),
             uniforms: {
-                size: { type: 'v2', value: size },
-                pos:  { type: 'v3', value: position },
-                vars: { type: 'v3', value: vars }
+                size:   { type: 'v2', value: size },
+                pos:    { type: 'v3', value: position },
+                config: { type: 'v3', value: config }
             }
         })
     );
     scene.add(box);
     renderer.render(scene, camera);
-
-    //start();
+    start();
 
     ///////////////////////////////////
 
     function start() {
         console.log('start');
+        config.x = 100;
         isRunning = true;
         loop();
     }
 
     function stop() {
         console.log('stop');
+        config.x = 1000;
         isRunning = false;
+        render();
     }
 
     function loop() {
@@ -82,12 +81,14 @@ define(function(require/*, exports, module*/) {
                 .multiply(friction)
             ;
 
-            console.log(position.z);
-
             if (position.z < 0.1) {
                 position.z = 0.1;
                 velocity.set(0, 0, 0);
                 acceleration.set(0, 0, 0);
+            }
+
+            if (velocity.length() == 0) {
+                stop();
             }
 
         }
@@ -98,17 +99,6 @@ define(function(require/*, exports, module*/) {
     }
 
     ///////////////////////////////////////////////////////
-
-    function onMouseMove(e) {
-        //mouse.x = 2 * e.clientX / size.x - 1;
-        //mouse.y = 2 * e.clientY / size.y - 1;
-        //lastMouse = mouse.clone();
-    }
-
-    function onMouseWheel(e) {
-        //zoom = zoom - e.wheelDelta/-1200;
-        //zoom = Math.max(0.25, zoom);
-    }
 
     function onKeyDown(e) {
         switch (e.keyCode) {
@@ -131,6 +121,9 @@ define(function(require/*, exports, module*/) {
                 acceleration.z -= Z;
                 break;
         }
+        if (!isRunning) {
+            start();
+        }
     }
 
     function onKeyUp(e) {
@@ -141,7 +134,6 @@ define(function(require/*, exports, module*/) {
                 } else {
                     velocity.set(0, 0, 0);
                     acceleration.set(0, 0, 0);
-                    stop();
                 }
                 break;
             case 87: // w
@@ -162,8 +154,6 @@ define(function(require/*, exports, module*/) {
 
     ////////////////////////
 
-    addEventListener('mousemove', onMouseMove);
-    addEventListener('mousewheel', onMouseWheel);
     addEventListener('keydown', onKeyDown);
     addEventListener('keyup', onKeyUp);
 
