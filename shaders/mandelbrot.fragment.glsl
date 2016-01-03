@@ -12,8 +12,9 @@ void main() {
 
     float ratio = size.x / size.y;
     vec2 p = gl_FragCoord.xy / size; // [0; 1]
-    vec2 center = vec2(3.5*p.x - 2.5, 2.0*p.y - 1.0);
+    vec2 center = vec2(3.5*p.x - 2.5, 2.0*p.y - 1.0); // [-2.5; 1] [-1, 1]
 
+    center += vec2(0.75, 0); // -(-2.5 + 1) / 2
     center /= exp(pos.z);
     center += vec2(pos.x, pos.y);
 
@@ -21,9 +22,9 @@ void main() {
 
     gl_FragColor = vec4(0.);
 
-    if (distance(center, vec2(0, 0)) < 0.01) {
-        gl_FragColor = vec4(1., 0., 0., 1.);
-    }
+//    if (distance(center, vec2(0, 0)) < 0.01) {
+//        gl_FragColor = vec4(1., 0., 0., 1.);
+//    }
 
     for (float i = 0.; i >= 0.; i += 1.) {
         // iterations limit
