@@ -9,22 +9,25 @@ define(function (require, exports, module) {
 
     class Renderer {
 
-        constructor() {
+        constructor(controls) {
             this._initProperties();
             this._initRenderer();
             this._initCamera();
             this._initScene();
             this._initControls();
+            this.render();
+            this.start();
         }
 
         _initProperties() {
             this.size = new gl.Vector2(innerWidth, innerHeight);
-            this.position = new gl.Vector3(0.001, 0.001, 0.1);
+            this.position = new gl.Vector3(0.36527993447050316, 0.5946044309928231, 0.1);
             this.velocity = new gl.Vector3(0, 0, 0);
             this.acceleration = new gl.Vector3(0, 0, 0);
             this.friction = new gl.Vector3(0.90, 0.50, 0.999);
             this.config = new gl.Vector3(1000, 0, 0); // iterations / not used / not used
             this.isRunning = false;
+            this.time = 0;
         }
 
         _initRenderer() {
@@ -41,17 +44,19 @@ define(function (require, exports, module) {
 
         _initScene() {
             this.scene = new gl.Scene();
+            this.shader = new gl.ShaderMaterial({
+                vertexShader:   require('text!../shaders/mandelbrot.vertex.glsl'),
+                fragmentShader: require('text!../shaders/mandelbrot.fragment.glsl'),
+                uniforms: {
+                    time:   { type: 'f', value: this.time },
+                    size:   { type: 'v2', value: this.size },
+                    pos:    { type: 'v3', value: this.position },
+                    config: { type: 'v3', value: this.config }
+                }
+            });
             this.box = new gl.Mesh(
                 new gl.BoxGeometry(1, this.size.y / this.size.x, 1),
-                new gl.ShaderMaterial({
-                    vertexShader:   require('text!../shaders/mandelbrot.vertex.glsl'),
-                    fragmentShader: require('text!../shaders/mandelbrot.fragment.glsl'),
-                    uniforms: {
-                        size:   { type: 'v2', value: this.size },
-                        pos:    { type: 'v3', value: this.position },
-                        config: { type: 'v3', value: this.config }
-                    }
-                })
+                this.shader
             );
             this.scene.add(this.box);
         }
@@ -61,23 +66,24 @@ define(function (require, exports, module) {
         }
 
         start() {
-            console.log('start');
+            console.log('started');
             this.config.x = 100;
             this.isRunning = true;
-            this.loop();
+            this._loop();
         }
 
         stop() {
-            console.log('stop');
+            console.log('stopped at position');
+            console.log([this.position.x, this.position.y].join(', '));
             this.config.x = 1000;
             this.isRunning = false;
             this.render();
         }
 
-        loop() {
+        _loop() {
             stats.begin();
             if (this.isRunning) {
-                requestAnimationFrame(this.loop.bind(this));
+                requestAnimationFrame(this._loop.bind(this));
                 this.step();
                 this.render();
             }
@@ -85,7 +91,6 @@ define(function (require, exports, module) {
         }
 
         step() {
-
             if (!this.isRunning) return;
 
             this.position.x += this.velocity.x / Math.exp(this.position.z);
@@ -152,11 +157,11 @@ define(function (require, exports, module) {
                     break;
                 case 87: // w
                 case 83: // s
-                    this.acceleration.y = 0;
+                    this.velocity.y = 0;
                     break;
                 case 65: // a
                 case 68: // d
-                    this.acceleration.x = 0;
+                    this.velocity.x = 0;
                     break;
                 case 38: // up
                 case 40: // down
