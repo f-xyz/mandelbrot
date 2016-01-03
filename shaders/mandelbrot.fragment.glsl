@@ -22,10 +22,6 @@ void main() {
 
     gl_FragColor = vec4(0.);
 
-//    if (distance(center, vec2(0, 0)) < 0.01) {
-//        gl_FragColor = vec4(1., 0., 0., 1.);
-//    }
-
     for (float i = 0.; i >= 0.; i += 1.) {
         // iterations limit
         if (i > config.x) break;

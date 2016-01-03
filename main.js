@@ -7,7 +7,7 @@ define(function(require/*, exports, module*/) {
     var stats = new Stats();
     document.body.appendChild(stats.domElement);
 
-    const V = 0.01; // velocity delta
+    const V = 0.015; // velocity delta
     const Z = 0.0001; // zoom delta
 
     var size = new gl.Vector2(innerWidth, innerHeight);
