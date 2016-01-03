@@ -11,7 +11,7 @@ define(function(require/*, exports, module*/) {
     const Z = 0.0001; // zoom delta
 
     var size = new gl.Vector2(innerWidth, innerHeight);
-    var position = new gl.Vector3(0, 0, 0.1);
+    var position = new gl.Vector3(0.001, 0.001, 0.1);
     var velocity = new gl.Vector3(0, 0, 0);
     var acceleration = new gl.Vector3(0, 0, 0);
     var friction = new gl.Vector3(0.90, 0.50, 0.999);
