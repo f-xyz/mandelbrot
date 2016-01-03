@@ -15,13 +15,15 @@ define(function (require, exports, module) {
             this._initCamera();
             this._initScene();
             this._initControls();
+            this._initUi();
             this.render();
             this.start();
         }
 
         _initProperties() {
             this.size = new gl.Vector2(innerWidth, innerHeight);
-            this.position = new gl.Vector3(0.36527993447050316, 0.5946044309928231, 0.1);
+            //this.position = new gl.Vector3(-1.1623420284054686, 0.2923688478942024);
+            this.position = new gl.Vector3(-0.3483002946699772, 0.6611475123024879);
             this.velocity = new gl.Vector3(0, 0, 0);
             this.acceleration = new gl.Vector3(0, 0, 0);
             this.friction = new gl.Vector3(0.90, 0.50, 0.999);
@@ -111,7 +113,6 @@ define(function (require, exports, module) {
             if (this.velocity.length() == 0) {
                 this.stop();
             }
-
         }
 
         _initControls() {
@@ -168,6 +169,17 @@ define(function (require, exports, module) {
                     this.acceleration.z = 0;
                     break;
             }
+        }
+
+        _initUi() {
+            this.select = document.querySelector('select');
+            this.select.addEventListener('change', function () {
+                this.select.blur();
+                var coords = renderer.select.value.match(/[-.\d]+/g).map(Number);
+                this.position.x = coords[0];
+                this.position.y = coords[1];
+                this.render();
+            }.bind(this));
         }
 
     }

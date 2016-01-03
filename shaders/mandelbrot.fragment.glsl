@@ -43,8 +43,8 @@ void main() {
         }
     }
 
-    if (distance(vec2(.5, .5), gl_FragCoord.xy / size) < 0.0025) {
-        gl_FragColor = vec4(1, 0, 1, 1);
-    }
+//    if (distance(vec2(.5, .5), gl_FragCoord.xy / size) < 0.0025) {
+//        gl_FragColor = vec4(1, 0, 1, 1);
+//    }
 
 }

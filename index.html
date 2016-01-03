@@ -4,14 +4,45 @@
     <meta charset="UTF-8">
     <title>mandelbrot</title>
     <style>
-        body { margin: 0; background: black; }
-        canvas { position: fixed; width: 100%; height: 100%; }
-        nav {  }
+        body {
+            margin: 0;
+            background: black;
+        }
+        canvas {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 50px;
+            z-index: 1;
+        }
+        select {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: transparent;
+            color: #99cfe7;
+            border: none;
+            padding: 10px;
+            font-size: 24px;
+        }
+        option {
+            background: black;
+            border: none
+        }
     </style>
 </head>
 <body>
     <nav>
-        asd
+        <select>
+            <option>-0.3483002946699772, 0.6611475123024879</option>
+            <option>-1.1623420284054686, 0.2923688478942024</option>
+        </select>
     </nav>
     <canvas></canvas>
     <script src="lib/require.js"></script>
