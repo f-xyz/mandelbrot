@@ -22,7 +22,6 @@ define(function (require, exports, module) {
 
         _initProperties() {
             this.size = new gl.Vector2(innerWidth, innerHeight);
-            //this.position = new gl.Vector3(-1.1623420284054686, 0.2923688478942024);
             this.position = new gl.Vector3(-0.3483002946699772, 0.6611475123024879);
             this.velocity = new gl.Vector3(0, 0, 0);
             this.acceleration = new gl.Vector3(0, 0, 0);
