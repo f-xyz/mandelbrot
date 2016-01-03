@@ -1,14 +1,14 @@
 define(function(require/*, exports, module*/) {
     'use strict';
 
-    var gl = require('three');
-    var Stats = require('stats');
-
-    var stats = new Stats();
-    document.body.appendChild(stats.domElement);
-
     const V = 0.015; // velocity delta
     const Z = 0.0001; // zoom delta
+
+    //var app = {};
+    //app._init();
+
+    var gl = require('three');
+    var stats = require('./src/stats');
 
     var size = new gl.Vector2(innerWidth, innerHeight);
     var position = new gl.Vector3(0.001, 0.001, 0.1);
@@ -149,7 +149,6 @@ define(function(require/*, exports, module*/) {
                 acceleration.z = 0;
                 break;
         }
-        console.log(e.keyCode);
     }
 
     ////////////////////////
