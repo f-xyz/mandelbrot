@@ -17,7 +17,7 @@ void main() {
     center /= exp(pos.z);
     center += vec2(pos.x, pos.y);
 
-    vec2 point = center;
+    vec2 pixel = center;
 
     gl_FragColor = vec4(0.);
 
@@ -26,14 +26,16 @@ void main() {
         if (i > config.x) break;
         // x = x^2 - y^2 + x0
         // y = 2xy + y0
-        point = vec2(point.x*point.x - point.y*point.y, 2.0*point.x*point.y) + center;
+        pixel = vec2(pixel.x*pixel.x - pixel.y*pixel.y, 2.0*pixel.x*pixel.y) + center;
         // x^2 + y^2 > 4
-        float z = dot(point, point);
+        float z = dot(pixel, pixel);
         if (z > 4.0) {
             float light = i + 1. - log(log(abs(z)) / log(2.));
-//            float light = i - log(log(abs(z)));
             light /= 100.;
-            gl_FragColor = vec4(light, light, 2.*light, 1.);
+            light = clamp(light, 0., 6.);
+//            gl_FragColor = vec4(pos.z*light, light, 2.*light, 1.);
+            gl_FragColor = vec4(sin(pos.z*light), light, 2.*light, 1.);
+//            gl_FragColor = vec4(sin(light), light, cos(light), 1.);
             break;
         }
     }

@@ -3,6 +3,9 @@ define(function (require, exports, module) {
 
     const V = 0.015; // velocity delta
     const Z = 0.00001; // zoom delta
+    const MIN_ZOOM = 0.1;
+    const MAX_ZOOM = 10; // GPU register size limit :/
+    const MAX_VELOCITY = 1;
 
     var gl = require('three');
     var stats = require('./stats');
@@ -25,7 +28,6 @@ define(function (require, exports, module) {
             this.position = new gl.Vector3(-0.3483002946699772, 0.6611475123024879);
             this.velocity = new gl.Vector3(0, 0, 0);
             this.acceleration = new gl.Vector3(0, 0, 0);
-            this.friction = new gl.Vector3(0.90, 0.50, 0.999);
             this.config = new gl.Vector3(1000, 0, 0); // iterations / not used / not used
             this.isRunning = false;
             this.time = 0;
@@ -75,8 +77,8 @@ define(function (require, exports, module) {
         }
 
         stop() {
-            console.log('stopped at position');
-            console.log([this.position.x, this.position.y].join(', '));
+            console.log('stopped at position and zoom');
+            console.log([this.position.x, this.position.y, this.position.z].join(', '));
             this.config.x = 1000;
             this.config.y = 0;
             this.isRunning = false;
@@ -100,13 +102,18 @@ define(function (require, exports, module) {
             this.position.y += this.velocity.y / Math.exp(this.position.z);
             this.position.z += this.velocity.z;
 
-            this.velocity
-                .add(this.acceleration)
-                .multiply(this.friction)
-            ;
+            this.velocity.add(this.acceleration);
 
-            if (this.position.z < 0.1) {
-                this.position.z = 0.1;
+            // min or max zoom - stop
+            if (this.position.z < MIN_ZOOM) {
+                this.position.z = MIN_ZOOM;
+                this.velocity.set(0, 0, 0);
+                this.acceleration.set(0, 0, 0);
+            }
+
+            // max zoom - stop
+            if (this.position.z > MAX_ZOOM) {
+                this.position.z = MAX_ZOOM;
                 this.velocity.set(0, 0, 0);
                 this.acceleration.set(0, 0, 0);
             }
