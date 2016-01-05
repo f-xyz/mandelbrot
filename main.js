@@ -1,7 +1,9 @@
 define(function(require/*, exports, module*/) {
     'use strict';
 
-    var controls = new (require('./src/controls'));
-    var renderer = window.renderer = new (require('./src/renderer'))(controls);
+    var Controls = require('./src/controls');
+    var Renderer = require('./src/renderer');
+
+    window.renderer = new Renderer(new Controls());
 
 });

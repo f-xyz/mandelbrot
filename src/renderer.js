@@ -2,14 +2,14 @@ define(function (require, exports, module) {
     'use strict';
 
     const V = 0.015; // velocity delta
-    const Z = 0.0001; // zoom delta
+    const Z = 0.00001; // zoom delta
 
     var gl = require('three');
     var stats = require('./stats');
 
     class Renderer {
 
-        constructor(controls) {
+        constructor() {
             this._initProperties();
             this._initRenderer();
             this._initCamera();
@@ -69,6 +69,7 @@ define(function (require, exports, module) {
         start() {
             console.log('started');
             this.config.x = 100;
+            this.config.y = 1;
             this.isRunning = true;
             this._loop();
         }
@@ -77,6 +78,7 @@ define(function (require, exports, module) {
             console.log('stopped at position');
             console.log([this.position.x, this.position.y].join(', '));
             this.config.x = 1000;
+            this.config.y = 0;
             this.isRunning = false;
             this.render();
         }
@@ -172,13 +174,16 @@ define(function (require, exports, module) {
 
         _initUi() {
             this.select = document.querySelector('select');
-            this.select.addEventListener('change', function () {
-                this.select.blur();
-                var coords = renderer.select.value.match(/[-.\d]+/g).map(Number);
-                this.position.x = coords[0];
-                this.position.y = coords[1];
-                this.render();
-            }.bind(this));
+            this.select.addEventListener('change', this._onCoordsSelected.bind(this));
+            this._onCoordsSelected();
+        }
+
+        _onCoordsSelected() {
+            this.select.blur();
+            var coords = this.select.value.match(/[-.\d]+/g).map(Number);
+            this.position.x = coords[0];
+            this.position.y = coords[1];
+            this.render();
         }
 
     }
