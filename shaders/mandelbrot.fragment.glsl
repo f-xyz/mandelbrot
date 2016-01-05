@@ -19,7 +19,7 @@ void main() {
 
     vec2 pixel = center;
 
-    gl_FragColor = vec4(0.);
+    gl_FragColor = vec4(1.);
 
     for (float i = 0.; i >= 0.; i += 1.) {
         // iterations limit

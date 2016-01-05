@@ -5,7 +5,7 @@ define(function (require, exports, module) {
     const Z = 0.00001; // zoom delta
     const MIN_ZOOM = 0.1;
     const MAX_ZOOM = 10; // GPU register size limit :/
-    const MAX_VELOCITY = 1;
+    const MAX_VELOCITY = 0.01;
 
     var gl = require('three');
     var stats = require('./stats');
@@ -79,7 +79,7 @@ define(function (require, exports, module) {
         stop() {
             console.log('stopped at position and zoom');
             console.log([this.position.x, this.position.y, this.position.z].join(', '));
-            this.config.x = 1000;
+            this.config.x = 100;
             this.config.y = 0;
             this.isRunning = false;
             this.render();
@@ -102,7 +102,9 @@ define(function (require, exports, module) {
             this.position.y += this.velocity.y / Math.exp(this.position.z);
             this.position.z += this.velocity.z;
 
-            this.velocity.add(this.acceleration);
+            if (this.velocity.length() <= MAX_VELOCITY) {
+                this.velocity.add(this.acceleration);
+            }
 
             // min or max zoom - stop
             if (this.position.z < MIN_ZOOM) {
