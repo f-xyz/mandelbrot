@@ -41,7 +41,7 @@ void main() {
     }
 
     if (config.y > 0. && distance(vec2(.5, .5), p) < 0.0025) {
-        gl_FragColor = vec4(1, 0, 1, 1);
+        gl_FragColor = vec4(0, 1, 0, 1);
     }
 
 }
