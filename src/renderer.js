@@ -4,8 +4,9 @@ define(function (require, exports, module) {
     const V = 0.015; // velocity delta
     const Z = 0.00001; // zoom delta
     const MIN_ZOOM = 0.1;
-    const MAX_ZOOM = 10; // GPU register size limit :/
+    const MAX_ZOOM = 8; // GPU register size limit :/
     const MAX_VELOCITY = 0.01;
+    const MAX_ITERATIONS = 100;
 
     var gl = require('three');
     var stats = require('./stats');
@@ -28,7 +29,7 @@ define(function (require, exports, module) {
             this.position = new gl.Vector3(-0.3483002946699772, 0.6611475123024879);
             this.velocity = new gl.Vector3(0, 0, 0);
             this.acceleration = new gl.Vector3(0, 0, 0);
-            this.config = new gl.Vector3(1000, 0, 0); // iterations / not used / not used
+            this.config = new gl.Vector3(MAX_ITERATIONS, 0, 0); // iterations / not used / not used
             this.isRunning = false;
             this.time = 0;
         }
@@ -70,7 +71,7 @@ define(function (require, exports, module) {
 
         start() {
             console.log('started');
-            this.config.x = 100;
+            this.config.x = MAX_ITERATIONS;
             this.config.y = 1;
             this.isRunning = true;
             this._loop();
@@ -79,7 +80,7 @@ define(function (require, exports, module) {
         stop() {
             console.log('stopped at position and zoom');
             console.log([this.position.x, this.position.y, this.position.z].join(', '));
-            this.config.x = 100;
+            this.config.x = MAX_ITERATIONS;
             this.config.y = 0;
             this.isRunning = false;
             this.render();
