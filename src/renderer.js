@@ -4,7 +4,7 @@ define(function (require, exports, module) {
     const V = 0.015; // velocity delta
     const Z = 0.00001; // zoom delta
     const MIN_ZOOM = 0.1;
-    const MAX_ZOOM = 8; // GPU register size limit :/
+    const MAX_ZOOM = 11; // GPU register size limit :/
     const MAX_VELOCITY = 0.01;
     const MAX_ITERATIONS = 100;
 
@@ -80,7 +80,7 @@ define(function (require, exports, module) {
         stop() {
             console.log('stopped at position and zoom');
             console.log([this.position.x, this.position.y, this.position.z].join(', '));
-            this.config.x = MAX_ITERATIONS;
+            this.config.x = MAX_ITERATIONS * 2;
             this.config.y = 0;
             this.isRunning = false;
             this.render();
@@ -149,7 +149,7 @@ define(function (require, exports, module) {
                     this.acceleration.z += Z;
                     break;
                 case 40: // down
-                    this.acceleration.z -= Z;
+                    this.acceleration.z -= Z*2;
                     break;
             }
             if (!this.isRunning) {
