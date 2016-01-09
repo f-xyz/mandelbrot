@@ -34,7 +34,7 @@ void main() {
             light /= 100.;
             light = clamp(light, 0., 6.);
             gl_FragColor = vec4(pos.z*light, light, 2.*light, 1.);
-//            gl_FragColor = vec4(sin(pos.z*light), light, 2.*light, 1.);
+//            gl_FragColor = vec4(abs(sin(pos.z*light)), light, 2.*light, 1.);
 //            gl_FragColor = vec4(sin(light), light, cos(light), 1.);
             break;
         }
