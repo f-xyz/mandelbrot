@@ -1,11 +1,11 @@
 define(function (require, exports, module) {
     'use strict';
 
-    const V = 0.015; // velocity delta
+    const A = 0.015; // acceleration
     const Z = 0.00001; // zoom delta
     const MIN_ZOOM = 0.1;
     const MAX_ZOOM = 11; // GPU register size limit :/
-    const MAX_VELOCITY = 0.01;
+    const MAX_VELOCITY = 0.1;
     const MAX_ITERATIONS = 100;
 
     var gl = require('three');
@@ -134,16 +134,16 @@ define(function (require, exports, module) {
         _onKeyDown(e) {
             switch (e.keyCode) {
                 case 87: // w
-                    this.velocity.y = V;
+                    this.velocity.y = A;
                     break;
                 case 83: // s
-                    this.velocity.y = -V;
+                    this.velocity.y = -A;
                     break;
                 case 65: // a
-                    this.velocity.x = -V;
+                    this.velocity.x = -A;
                     break;
                 case 68: // d
-                    this.velocity.x = V;
+                    this.velocity.x = A;
                     break;
                 case 38: // up
                     this.acceleration.z += Z;
