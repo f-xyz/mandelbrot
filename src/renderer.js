@@ -4,7 +4,7 @@ define(function (require, exports, module) {
     const A = 0.015; // acceleration
     const Z = 0.00001; // zoom delta
     const MIN_ZOOM = 0.1;
-    const MAX_ZOOM = 11; // GPU register size limit :/
+    const MAX_ZOOM = 10; // GPU register size limit :/
     const MAX_VELOCITY = 0.1;
     const MAX_ITERATIONS = 100;
 
